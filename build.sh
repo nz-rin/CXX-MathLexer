@@ -1,8 +1,8 @@
 echo "COMPILING MAIN"
 
-echo "  > g++ -DLOG_ERROR -Wall -Wextra main.cxx -o main"
+echo "  > g++ -ggdb -DLOG_ERROR -Wall -Wextra main.cxx -o main"
 
-g++ -DLOG_ERROR -Wall -Wextra main.cxx -o main
+g++ -ggdb -DLOG_ERROR -Wall -Wextra main.cxx -o main
 
 if [[ $? != 0 ]]; then
 	echo "FAILED TO COMPILE"
