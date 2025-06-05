@@ -34,18 +34,42 @@ namespace MathLexer{
 		return _numeric(c)  || _numeric_exception(c);
 	}
 
-	inline void fold_signed_tokens(std::vector<std::string> &tokens){
+	inline void fold_tokens(std::vector<std::string> &tokens){
 		size_t i = 0;
 		while(i < tokens.size()){
 			if(tokens[i][0] == '+' || tokens[i][0] == '-'){
 				i++;
-				if(tokens[i][0] == '+' || tokens[i][0] == '-'){
+				//fold ++ int +
+				if(tokens[i][0] == '+' && tokens[i-1][0] == '+'){
+					tokens.erase(tokens.begin() + i);
+				//fold -- int +
+				}else if(tokens[i][0] == '-' && tokens[i-1][0] == '-'){
+					tokens.erase(tokens.begin() + i);
+					tokens[i-1] = '+';
+				// remove unnecessary + sign
+				}else if(tokens[i][0] == '+' ){
+					tokens.erase(tokens.begin() + i);
+				// change '-' 'NUMBER' into '-NUMBER', i.e negative number
+				}else if (tokens[i][0] == '-'){
 					char c = tokens[i][0];
 					tokens.erase(tokens.begin() + i);
 					tokens[i] = c + tokens[i];
 				}
+			}else if (tokens[i][0] == '('){
+				i++;
+				// remove unnecessary + sign
+				if(tokens[i][0] == '+' ){
+					tokens.erase(tokens.begin() + i);
+				// change '(' '-' 'NUMBER' into '(' '-NUMBER', i.e negative number inside of bracketed expr
+				}else if (tokens[i][0] == '-'){
+					char c = tokens[i][0];
+					tokens.erase(tokens.begin() + i);
+					tokens[i] = c + tokens[i];
+					i++;
+				}
+			}else{
+				i++;
 			}
-			i++;
 		}
 	}
 
@@ -55,6 +79,20 @@ namespace MathLexer{
 			if(tokens[i][0] == '('){
 				_bracket_count++;
 				i++;
+
+				//if true, failed, incomplete EXPRESSION
+				if(i >= tokens.size()){
+					return false;
+				}
+
+				if(_numeric(tokens[i][0])){
+					continue;
+				//sign
+				}else if(tokens[i][0] == '+' || tokens[i][0] == '-'){
+					i++;
+					continue;
+				}
+
 			}else if(tokens[i][0] == ')'){
 				_bracket_count--;
 				i++;
@@ -68,11 +106,12 @@ namespace MathLexer{
 					return false;
 				}
 				i++;
+				//if true, failed, stray operator, ') OPERATOR'
 				if(i >= tokens.size()){
 					return false;
 				}
 
-				//number or -+operator or exprs fine
+				//NUMBER, -+ OPERATOR or EXPRS fine
 				if( (tokens[i][0] == '/' || tokens[i][0] == '*') ){
 					return false;
 				}
@@ -80,7 +119,7 @@ namespace MathLexer{
 				if(_operator(tokens[i][0]))
 					i++;
 
-			//number
+			//NUMBER
 			}else if ( _numeric(tokens[i][0]) ){
 				i++;
 				if(i >= tokens.size()){
@@ -91,11 +130,12 @@ namespace MathLexer{
 					continue;
 				}
 
-				//next must be and operator
+				//next must be OPERATOR
 				if( !_operator(tokens[i][0]) ){
 					return false;
 				}
 				i++;
+				//if true, failed, stray operator, ') OPERATOR'
 				if(i >= tokens.size()){
 					return false;
 				}
