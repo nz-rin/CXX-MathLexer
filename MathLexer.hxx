@@ -51,9 +51,8 @@ namespace MathLexer{
 					tokens.erase(tokens.begin() + i);
 				// change '-' 'NUMBER' into '-NUMBER', i.e negative number
 				}else if (tokens[i][0] == '-'){
-					char c = tokens[i][0];
 					tokens.erase(tokens.begin() + i);
-					tokens[i] = c + tokens[i];
+					tokens[i-1] = '-';
 				}
 			}else if (tokens[i][0] == '('){
 				i++;
