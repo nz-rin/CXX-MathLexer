@@ -74,6 +74,7 @@ namespace MathLexer{
 
 	inline bool validate_expressions(const std::vector<std::string> &tokens){
 		size_t _bracket_count = 0, i=0;
+		//NOTE need to add check for "EXPR" () with an empty () EXPTR
 		while(i < tokens.size()){
 			if(tokens[i][0] == '('){
 				_bracket_count++;
@@ -134,7 +135,7 @@ namespace MathLexer{
 					return false;
 				}
 				i++;
-				//if true, failed, stray operator, ') OPERATOR'
+				//if true, failed, stray operator, 'EXPR OPERATOR'
 				if(i >= tokens.size()){
 					return false;
 				}
@@ -144,8 +145,13 @@ namespace MathLexer{
 					return false;
 				}
 				//operator if it falls throught
-				if(_operator(tokens[i][0]))
+				if(_operator(tokens[i][0])){
 					i++;
+					//stray OPERATOR
+					if(i >= tokens.size()){
+						return false;
+					}
+				}
 			}else{
 				return false;
 			}
