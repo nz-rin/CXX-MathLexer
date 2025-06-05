@@ -34,7 +34,7 @@ namespace MathLexer{
 		return _numeric(c)  || _numeric_exception(c);
 	}
 
-	inline void fold_signs_tokens(std::vector<std::string> &tokens){
+	inline void fold_signed_tokens(std::vector<std::string> &tokens){
 		size_t i = 0;
 		while(i < tokens.size()){
 			if(tokens[i][0] == '+' || tokens[i][0] == '-'){
