@@ -1,3 +1,6 @@
+
+#!/usr/bin/env bash
+
 echo "COMPILING MAIN"
 
 echo "  > g++ -ggdb -DLOG_ERROR -Wall -Wextra main.cxx -o main"

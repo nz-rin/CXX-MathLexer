@@ -11,7 +11,7 @@ The namespace also 2 additional helper functions:
   Expression    = [+|-] NUMBER | [+|-] (Expression)
   Operator      = +|-|*|/
 ```
-- fold_signed_tokens
+- fold_tokens
 The lexer will cut an expression with signed number such as 1* -2 into '1', '*', '-' & '2', which may unwanted.
 this function will 'fold' tokens into signed tokens according to this grammer:
 ```
